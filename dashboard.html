@@ -1759,6 +1759,48 @@
                 }
             });
         });
+
+        // User data display करने के लिए
+        function displayUserData() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    const userId = user.uid;
+                    
+                    // Firestore से user data fetch करें
+                    db.collection('users').doc(userId).get()
+                        .then((doc) => {
+                            if (doc.exists) {
+                                const userData = doc.data();
+                                
+                                // User data display करें
+                                document.getElementById('userName').textContent = userData.name;
+                                document.getElementById('userMobile').textContent = userData.mobile;
+                                document.getElementById('userEmail').textContent = userData.email;
+                                document.getElementById('sponsorId').textContent = userData.sponsorId;
+                                document.getElementById('sponsorLink').textContent = userData.sponsorLink;
+                                
+                                // Sponsor link को clickable बनाएं
+                                const sponsorLinkElement = document.getElementById('sponsorLink');
+                                sponsorLinkElement.href = userData.sponsorLink;
+                                sponsorLinkElement.target = '_blank';
+                            } else {
+                                console.log("No such document!");
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error getting document:", error);
+                        });
+                } else {
+                    // User not logged in, redirect to login page
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        // Page load होने पर user data display करें
+        window.onload = function() {
+            displayUserData();
+        };
     </script>
 
     <!-- TradingView Widget 1 BEGIN -->
