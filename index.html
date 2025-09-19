@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FxMinds - Advanced Forex Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCTiAjeEE9jYmYNalGrlkcRJ8y-EXdcy1U",
+        authDomain: "fxminds-35690.firebaseapp.com",
+        projectId: "fxminds-35690",
+        storageBucket: "fxminds-35690.firebasestorage.app",
+        messagingSenderId: "163957259112",
+        appId: "1:163957259112:web:e51bed91a64bc078d974dd"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      
+      // Check user authentication state
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is logged in
+          document.getElementById('start-trading').style.display = 'block';
+          document.getElementById('login-btn').style.display = 'none';
+          document.getElementById('register-btn').style.display = 'none';
+        } else {
+          // User is logged out
+          document.getElementById('start-trading').style.display = 'none';
+          document.getElementById('login-btn').style.display = 'block';
+          document.getElementById('register-btn').style.display = 'block';
+        }
+      });
+    </script>
+    
+    <style>
+        :root {
+            --primary-orange: #B8860B;
+            --dark-khaki: #BDB76B;
+            --light-orange: #FFD4A3;
+            --light-khaki: #F0E68C;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --dark-gray: #343A40;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shine: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--dark-khaki) 100%);
+            color: var(--white);
+            padding: 0;
+            position: relative;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            margin-right: 10px;
+            color: var(--white);
+            transform: translateZ(20px);
+        }
+        
+        .logo span {
+            transform: translateZ(15px);
+        }
+        
+        /* Navigation Styles */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin-right: 20px;
+        }
+        
+        .nav-item {
+            position: relative;
+            margin: 0 10px;
+        }
+        
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 500px;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 5px;
+            transform: translateZ(10px);
+        }
+        
+        .nav-link span {
+            transform: translateZ(5px);
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--white);
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 12px 15px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-khaki);
+            color: var(--primary-orange);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .login-btn, .register-btn {
+            background-color: var(--dark-khaki);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .login-btn:hover, .register-btn:hover {
+            background-color: var(--primary-orange);
+            transform: translateY(-3px) translateZ(10px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .register-btn {
+            background-color: var(--primary-orange);
+        }
+        
+        .register-btn:hover {
+            background-color: var(--dark-khaki);
+        }
+        
+        .login-btn span, .register-btn span {
+            transform: translateZ(5px);
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgxODQsIDEzNCwgMTEsIDAuMDUpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+');
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-orange);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .hero h1 span {
+            display: inline-block;
+            transform: translateZ(20px);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateZ(20px) translateY(0);
+            }
+            50% {
+                transform: translateZ(20px) translateY(-10px);
+            }
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .cta-btn span {
+            transform: translateZ(10px);
+        }
+        
+        .primary-btn {
+            background-color: var(--primary-orange);
+            color: var(--white);
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--dark-khaki);
+            transform: translateY(-5px) translateZ(15px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .secondary-btn {
+            background-color: var(--white);
+            color: var(--primary-orange);
+            border: 2px solid var(--primary-orange);
+        }
+        
+        .secondary-btn:hover {
+            background-color: var(--light-khaki);
+            transform: translateY(-5px) translateZ(15px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 30px;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--dark-khaki);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: var(--dark-gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) translateZ(20px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            color: var(--white);
+            transform: translateZ(20px);
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-orange);
+        }
+        
+        .feature-card p {
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        /* Platform Section */
+        .platform {
+            padding: 80px 30px;
+            background-color: var(--light-khaki);
+        }
+        
+        .platform-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .platform-text h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+        }
+        
+        .platform-text p {
+            font-size: 18px;
+            color: var(--dark-gray);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .platform-features {
+            list-style: none;
+        }
+        
+        .platform-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+        
+        .platform-feature i {
+            color: var(--primary-orange);
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .platform-image {
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .platform-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateZ(30px);
+        }
+        
+        /* Education Section */
+        .education {
+            padding: 80px 30px;
+            background-color: var(--white);
+        }
+        
+        .education-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .edu-card {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .edu-card:hover {
+            transform: translateY(-10px) translateZ(20px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .edu-card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .edu-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .edu-card:hover .edu-card-image img {
+            transform: scale(1.1);
+        }
+        
+        .edu-card-content {
+            padding: 25px;
+        }
+        
+        .edu-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-orange);
+        }
+        
+        .edu-card p {
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .edu-link {
+            display: inline-block;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .edu-link:hover {
+            color: var(--dark-khaki);
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-orange);
+            color: var(--white);
+            padding: 70px 30px 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--dark-khaki);
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--dark-khaki);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: var(--light-orange);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--dark-khaki);
+            padding-left: 5px;
+        }
+        
+        .contact-info {
+            list-style: none;
+        }
+        
+        .contact-info li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--light-orange);
+        }
+        
+        .contact-info i {
+            color: var(--dark-khaki);
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--dark-khaki);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--dark-khaki);
+            color: var(--white);
+            transform: translateY(-5px);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+        
+        .newsletter-form input::placeholder {
+            color: var(--light-orange);
+        }
+        
+        .newsletter-form button {
+            padding: 12px 20px;
+            background-color: var(--dark-khaki);
+            color: var(--white);
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form button:hover {
+            background-color: var(--light-orange);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-orange);
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .platform-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .platform-image {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <i class="fas fa-chart-line"></i>
+                <span>FxMinds</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="education.html" class="nav-link">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Education</span>
+                        </a>
+                        <div class="dropdown">
+                            <a href="beginners-guide.html" class="dropdown-item">Beginner's Guide</a>
+                            <a href="trading-strategies.html" class="dropdown-item">Trading Strategies</a>
+                            <a href="market-analysis.html" class="dropdown-item">Market Analysis</a>
+                            <a href="webinars.html" class="dropdown-item">Webinars</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="platform.html" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Platform</span>
+                        </a>
+                        <div class="dropdown">
+                            <a href="trading-dashboard.html" class="dropdown-item">Trading Dashboard</a>
+                            <a href="mobile-app.html" class="dropdown-item">Mobile App</a>
+                            <a href="api-access.html" class="dropdown-item">API Access</a>
+                            <a href="security.html" class="dropdown-item">Security</a>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="auth-buttons">
+                    <a href="login.html" class="login-btn" id="login-btn">
+                        <span>Login</span>
+                    </a>
+                    <a href="register.html" class="register-btn" id="register-btn">
+                        <span>Register</span>
+                    </a>
+                </div>
+                
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1><span>Advanced Forex Trading</span> <span>Platform</span></h1>
+            <p>Experience the future of forex trading with our cutting-edge platform designed for both beginners and professional traders.</p>
+            
+            <div class="cta-buttons">
+                <a href="dashboard.html" class="cta-btn primary-btn" id="start-trading" style="display: none;">
+                    <span>Start Trading</span>
+                </a>
+                <a href="#features" class="cta-btn secondary-btn">
+                    <span>Learn More</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Why Choose FxMinds</h2>
+            <p>We provide the tools and resources you need to succeed in the dynamic world of forex trading.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Secure & Reliable</h3>
+                <p>Bank-level security protocols and multi-layer encryption to keep your assets safe at all times.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Lightning Fast</h3>
+                <p>Execute trades in milliseconds with our high-performance trading engine and global server network.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>Advanced Analytics</h3>
+                <p>Comprehensive market analysis tools and real-time data to make informed trading decisions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile Trading</h3>
+                <p>Trade anytime, anywhere with our powerful mobile application available for iOS and Android.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Expert Support</h3>
+                <p>24/7 customer support from our team of forex trading experts and community managers.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>Educational Resources</h3>
+                <p>Learn from the best with our comprehensive library of tutorials, webinars, and courses.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Platform Section -->
+    <section class="platform">
+        <div class="section-title">
+            <h2>Powerful Trading Platform</h2>
+            <p>Designed for traders at every level with intuitive features and advanced tools.</p>
+        </div>
+        
+        <div class="platform-content">
+            <div class="platform-text">
+                <h2>All-in-One Trading Solution</h2>
+                <p>FxMinds offers a comprehensive trading platform that combines powerful technology with user-friendly design. Whether you're a beginner looking to make your first trade or an experienced trader seeking advanced tools, our platform has everything you need.</p>
+                
+                <ul class="platform-features">
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Real-time market data and price alerts</span>
+                    </li>
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Advanced charting and technical indicators</span>
+                    </li>
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Automated trading bots and strategies</span>
+                    </li>
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Portfolio tracking and performance analytics</span>
+                    </li>
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Low fees and competitive spreads</span>
+                    </li>
+                    <li class="platform-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Secure wallet with multi-signature support</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="platform-image">
+                <img src="https://images.unsplash.com/photo-1639322537408-8bc1b8c3d8c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Education Section -->
+    <section class="education">
+        <div class="section-title">
+            <h2>Educational Resources</h2>
+            <p>Expand your knowledge and skills with our comprehensive educational materials.</p>
+        </div>
+        
+        <div class="education-cards">
+            <div class="edu-card">
+                <div class="edu-card-image">
+                    <img src="https://images.unsplash.com/photo-1633412802994-5c058f153b07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Forex Basics">
+                </div>
+                <div class="edu-card-content">
+                    <h3>Forex Basics</h3>
+                    <p>Learn the fundamentals of forex trading, currency pairs, and how the foreign exchange market works.</p>
+                    <a href="forex-basics.html" class="edu-link">Start Learning →</a>
+                </div>
+            </div>
+            
+            <div class="edu-card">
+                <div class="edu-card-image">
+                    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0b623ac3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Trading Strategies">
+                </div>
+                <div class="edu-card-content">
+                    <h3>Trading Strategies</h3>
+                    <p>Master proven trading strategies and techniques to maximize your profits in any market condition.</p>
+                    <a href="trading-strategies.html" class="edu-link">Explore Strategies →</a>
+                </div>
+            </div>
+            
+            <div class="edu-card">
+                <div class="edu-card-image">
+                    <img src="https://images.unsplash.com/photo-1639322537408-8bc1b8c3d8c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Market Analysis">
+                </div>
+                <div class="edu-card-content">
+                    <h3>Market Analysis</h3>
+                    <p>Develop your analytical skills with our in-depth market analysis and research resources.</p>
+                    <a href="market-analysis.html" class="edu-link">Read Analysis →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>About FxMinds</h3>
+                <p>FxMinds is a leading forex trading platform dedicated to providing secure, reliable, and user-friendly trading experiences for traders worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Trading</h3>
+                <ul class="footer-links">
+                    <li><a href="major-pairs.html">Major Pairs</a></li>
+                    <li><a href="cross-pairs.html">Cross Pairs</a></li>
+                    <li><a href="exotics.html">Exotics</a></li>
+                    <li><a href="commodities.html">Commodities</a></li>
+                    <li><a href="indices.html">Indices</a></li>
+                    <li><a href="cryptocurrencies.html">Cryptocurrencies</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Forex Street, Trading City, TC 10001</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+1 (555) 123-4567</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>support@fxminds.com</span>
+                    </li>
+                </ul>
+                
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button>Subscribe</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 FxMinds. All rights reserved. | <a href="privacy-policy.html" style="color: var(--dark-khaki);">Privacy Policy</a> | <a href="terms-of-service.html" style="color: var(--dark-khaki);">Terms of Service</a></p>
+        </div>
+    </footer>
+</body>
+</html>
