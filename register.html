@@ -5,335 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - FxMinds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
-
-    <script>
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCTiAjeEE9jYmYNalGrlkcRJ8y-EXdcy1U",
-        authDomain: "fxminds-35690.firebaseapp.com",
-        projectId: "fxminds-35690",
-        storageBucket: "fxminds-35690.firebasestorage.app",
-        messagingSenderId: "163957259112",
-        appId: "1:163957259112:web:e51bed91a64bc078d974dd",
-        measurementId: "G-3119VG4HH6"
-      };
-
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      const analytics = firebase.analytics();
-    </script>
-    
-    <style>
-        :root {
-            --primary-orange: #B8860B;
-            --dark-khaki: #BDB76B;
-            --light-orange: #FFD4A3;
-            --light-khaki: #F0E68C;
-            --white: #FFFFFF;
-            --light-gray: #F8F9FA;
-            --dark-gray: #343A40;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shine: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .register-container {
-            background-color: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 500px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .register-header {
-            background-color: var(--primary-orange);
-            color: var(--white);
-            padding: 25px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .register-header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: var(--shine);
-            transform: rotate(45deg);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .register-header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .register-header p {
-            font-size: 16px;
-            opacity: 0.9;
-            position: relative;
-            z-index: 2;
-        }
-
-        .register-form {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary-orange);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--dark-khaki);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.2);
-        }
-
-        .form-input.error {
-            border-color: #E74C3C;
-        }
-
-        .error-message {
-            color: #E74C3C;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .form-checkbox {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .form-checkbox input {
-            margin-right: 10px;
-            margin-top: 5px;
-        }
-
-        .form-checkbox label {
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .form-checkbox a {
-            color: var(--primary-orange);
-            text-decoration: none;
-        }
-
-        .form-checkbox a:hover {
-            text-decoration: underline;
-        }
-
-        .register-btn {
-            width: 100%;
-            background-color: var(--primary-orange);
-            color: var(--white);
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .register-btn:hover {
-            background-color: #9a7309;
-        }
-
-        .register-btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .login-link a {
-            color: var(--primary-orange);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-orange);
-            color: var(--white);
-            padding: 15px 20px;
-            border-radius: 5px;
-            box-shadow: var(--shadow);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: transform 0.3s, opacity 0.3s;
-            z-index: 1000;
-            max-width: 300px;
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .notification.success {
-            background-color: #2ECC71;
-        }
-
-        .notification.error {
-            background-color: #E74C3C;
-        }
-
-        .referral-info {
-            background-color: rgba(189, 183, 107, 0.1);
-            border-left: 4px solid var(--dark-khaki);
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .referral-info p {
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .referral-info strong {
-            color: var(--primary-orange);
-        }
-
-        .loading-indicator {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-orange);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 600px) {
-            .register-container {
-                max-width: 100%;
-            }
-            
-            .register-form {
-                padding: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Loading Indicator -->
-    <div class="loading-indicator" id="loadingIndicator">
-        <div class="loading-spinner"></div>
-    </div>
-
-    <div class="register-container">
-        <div class="register-header">
+    <!-- Register Container -->
+    <div class="form-container">
+        <div class="form-header">
             <h1><i class="fas fa-chart-line"></i> FxMinds</h1>
-            <p>Join the Forex Revolution</p>
+            <p>Create Account</p>
         </div>
         
-        <form class="register-form" id="registerForm">
-            <div class="referral-info">
-                <p><strong>Important:</strong> Registration requires a valid 8-digit referral code starting with "fxm". Without a referral code, you cannot register.</p>
-            </div>
-            
+        <form class="form-body" id="registerForm">
             <div class="form-group">
                 <label for="name" class="form-label">Full Name</label>
                 <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
-                <div class="error-message" id="nameError">Please enter your full name</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="mobile" class="form-label">Mobile Number</label>
-                <input type="tel" id="mobile" class="form-input" placeholder="Enter your 10-digit mobile number" required>
-                <div class="error-message" id="mobileError">Mobile number must be exactly 10 digits</div>
+                <div class="error-message" id="nameError">Please enter your name</div>
             </div>
             
             <div class="form-group">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
-                <div class="error-message" id="emailError">Please enter a valid email address</div>
+                <div class="error-message" id="emailError">Please enter a valid email</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="tel" id="mobile" class="form-input" placeholder="Enter your mobile number" required>
+                <div class="error-message" id="mobileError">Please enter your mobile number</div>
             </div>
             
             <div class="form-group">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" class="form-input" placeholder="Create a strong password" required>
-                <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                <div class="error-message" id="passwordError">Please enter your password</div>
             </div>
             
             <div class="form-group">
@@ -342,296 +46,31 @@
                 <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
             </div>
             
-            <div class="form-group">
-                <label for="referralCode" class="form-label">Referral Code</label>
-                <input type="text" id="referralCode" class="form-input" placeholder="Enter 8-digit referral code (fxmXXXXX)" required>
-                <div class="error-message" id="referralCodeError">Referral code must be 8 digits starting with "fxm"</div>
+            <div class="form-options">
+                <label>
+                    <input type="checkbox" id="agreeTerms"> I agree to the <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>
+                </label>
             </div>
             
-            <div class="form-checkbox">
-                <input type="checkbox" id="terms" required>
-                <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
-            </div>
+            <button type="submit" class="form-btn" id="registerBtn">
+                Register
+            </button>
             
-            <button type="submit" class="register-btn" id="registerBtn">Register Account</button>
-            
-            <div class="login-link">
+            <div class="form-link">
                 Already have an account? <a href="login.html">Login here</a>
             </div>
         </form>
     </div>
 
+    <!-- Notification -->
     <div class="notification" id="notification"></div>
 
-    <script>
-        // DOM Elements
-        const registerForm = document.getElementById('registerForm');
-        const nameInput = document.getElementById('name');
-        const mobileInput = document.getElementById('mobile');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const referralCodeInput = document.getElementById('referralCode');
-        const termsCheckbox = document.getElementById('terms');
-        const registerBtn = document.getElementById('registerBtn');
-        const notification = document.getElementById('notification');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-
-        // Error elements
-        const nameError = document.getElementById('nameError');
-        const mobileError = document.getElementById('mobileError');
-        const emailError = document.getElementById('emailError');
-        const passwordError = document.getElementById('passwordError');
-        const confirmPasswordError = document.getElementById('confirmPasswordError');
-        const referralCodeError = document.getElementById('referralCodeError');
-
-        // Show notification
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = 'notification show';
-            if (type === 'success') {
-                notification.classList.add('success');
-            } else if (type === 'error') {
-                notification.classList.add('error');
-            }
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-
-        // Validate referral code format
-        function validateReferralCode(code) {
-            const regex = /^fxm[a-zA-Z0-9]{5}$/;
-            return regex.test(code);
-        }
-
-        // Check if user already exists in Firestore
-        async function checkUserExists(email, mobile) {
-            try {
-                // Check by email
-                const emailQuery = await db.collection('users').where('email', '==', email).get();
-                if (!emailQuery.empty) {
-                    return { exists: true, field: 'email' };
-                }
-                
-                // Check by mobile
-                const mobileQuery = await db.collection('users').where('mobile', '==', mobile).get();
-                if (!mobileQuery.empty) {
-                    return { exists: true, field: 'mobile' };
-                }
-                
-                return { exists: false };
-            } catch (error) {
-                console.error("Error checking user existence:", error);
-                return { exists: false, error: error.message };
-            }
-        }
-
-        // जब user successfully register हो जाए
-        function saveUserData(userId, userData) {
-            db.collection('users').doc(userId).set({
-                name: userData.name,
-                mobile: userData.mobile,
-                email: userData.email,
-                sponsorId: userData.sponsorId,
-                sponsorLink: userData.sponsorLink,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                console.log("User data saved successfully!");
-                // Dashboard पर redirect करें
-                window.location.href = 'dashboard.html';
-            })
-            .catch((error) => {
-                console.error("Error saving user data: ", error);
-                showNotification('Error saving user data. Please try again.', 'error');
-                loadingIndicator.style.display = 'none';
-                registerBtn.disabled = false;
-                registerBtn.textContent = 'Register Account';
-            });
-        }
-
-        // Sponsor link generate करने के लिए function
-        function generateSponsorLink() {
-            const userId = 'FXM' + Math.random().toString(36).substr(2, 9).toUpperCase();
-            return `https://fxminds-35690.web.app/?sponsor=${userId}`;
-        }
-
-        // Validate form
-        function validateForm() {
-            let isValid = true;
-            
-            // Reset errors
-            document.querySelectorAll('.form-input').forEach(input => {
-                input.classList.remove('error');
-            });
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.style.display = 'none';
-            });
-            
-            // Validate name
-            if (nameInput.value.trim() === '') {
-                nameInput.classList.add('error');
-                nameError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate mobile (10 digits)
-            if (!/^\d{10}$/.test(mobileInput.value)) {
-                mobileInput.classList.add('error');
-                mobileError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate email
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-                emailInput.classList.add('error');
-                emailError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate password (min 8 characters)
-            if (passwordInput.value.length < 8) {
-                passwordInput.classList.add('error');
-                passwordError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate confirm password
-            if (passwordInput.value !== confirmPasswordInput.value) {
-                confirmPasswordInput.classList.add('error');
-                confirmPasswordError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate referral code
-            if (!validateReferralCode(referralCodeInput.value)) {
-                referralCodeInput.classList.add('error');
-                referralCodeError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Validate terms
-            if (!termsCheckbox.checked) {
-                showNotification('You must agree to the Terms & Conditions', 'error');
-                isValid = false;
-            }
-            
-            return isValid;
-        }
-
-        // Form submission handler में ये add करें:
-        registerForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (validateForm()) {
-                // Show loading indicator
-                loadingIndicator.style.display = 'flex';
-                
-                // Disable button
-                registerBtn.disabled = true;
-                registerBtn.textContent = 'Creating Account...';
-                
-                try {
-                    // Check if user already exists
-                    const userExists = await checkUserExists(emailInput.value, mobileInput.value);
-                    
-                    if (userExists.exists) {
-                        let errorMessage = 'An account with this ';
-                        if (userExists.field === 'email') {
-                            errorMessage += 'email';
-                        } else if (userExists.field === 'mobile') {
-                            errorMessage += 'mobile number';
-                        }
-                        errorMessage += ' already exists';
-                        
-                        showNotification(errorMessage, 'error');
-                        
-                        // Hide loading indicator
-                        loadingIndicator.style.display = 'none';
-                        registerBtn.disabled = false;
-                        registerBtn.textContent = 'Register Account';
-                        return;
-                    }
-                    
-                    const userData = {
-                        name: nameInput.value.trim(),
-                        mobile: mobileInput.value,
-                        email: emailInput.value.trim(),
-                        sponsorId: referralCodeInput.value,
-                        sponsorLink: generateSponsorLink()
-                    };
-                    
-                    // Firebase authentication के साथ user create करें
-                    auth.createUserWithEmailAndPassword(userData.email, passwordInput.value)
-                        .then((userCredential) => {
-                            const userId = userCredential.user.uid;
-                            saveUserData(userId, userData);
-                        })
-                        .catch((error) => {
-                            console.error("Registration error: ", error);
-                            
-                            // Handle specific Firebase errors
-                            let errorMessage = 'Registration failed. Please try again.';
-                            
-                            if (error.code === 'auth/email-already-in-use') {
-                                errorMessage = 'An account with this email already exists.';
-                            } else if (error.code === 'auth/weak-password') {
-                                errorMessage = 'Password is too weak. Please use a stronger password.';
-                            } else if (error.code === 'auth/invalid-email') {
-                                errorMessage = 'Please enter a valid email address.';
-                            }
-                            
-                            showNotification(errorMessage, 'error');
-                            
-                            // Hide loading indicator
-                            loadingIndicator.style.display = 'none';
-                            registerBtn.disabled = false;
-                            registerBtn.textContent = 'Register Account';
-                        });
-                } catch (error) {
-                    console.error("Error during registration:", error);
-                    showNotification('Registration failed. Please try again.', 'error');
-                    
-                    // Hide loading indicator
-                    loadingIndicator.style.display = 'none';
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Register Account';
-                }
-            }
-        });
-
-        // Real-time validation
-        referralCodeInput.addEventListener('input', function() {
-            if (this.value && !validateReferralCode(this.value)) {
-                this.classList.add('error');
-                referralCodeError.style.display = 'block';
-            } else {
-                this.classList.remove('error');
-                referralCodeError.style.display = 'none';
-            }
-        });
-
-        mobileInput.addEventListener('input', function() {
-            if (this.value && !/^\d{10}$/.test(this.value)) {
-                this.classList.add('error');
-                mobileError.style.display = 'block';
-            } else {
-                this.classList.remove('error');
-                mobileError.style.display = 'none';
-            }
-        });
-
-        confirmPasswordInput.addEventListener('input', function() {
-            if (this.value && this.value !== passwordInput.value) {
-                this.classList.add('error');
-                confirmPasswordError.style.display = 'block';
-            } else {
-                this.classList.remove('error');
-                confirmPasswordError.style.display = 'none';
-            }
-        });
-    </script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-functions-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
