@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
 
     <script>
       // Firebase configuration
@@ -19,13 +20,15 @@
         projectId: "fxminds-35690",
         storageBucket: "fxminds-35690.firebasestorage.app",
         messagingSenderId: "163957259112",
-        appId: "1:163957259112:web:e51bed91a64bc078d974dd"
+        appId: "1:163957259112:web:e51bed91a64bc078d974dd",
+        measurementId: "G-3119VG4HH6"
       };
 
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
+      const analytics = firebase.analytics();
     </script>
     
     <style>
