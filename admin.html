@@ -285,39 +285,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Demo Credentials */
-        .demo-credentials {
-            background-color: var(--light-gray);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--primary-orange);
-        }
-
-        .demo-credentials h4 {
-            color: var(--primary-orange);
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .credential-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .credential-label {
-            font-weight: 600;
-        }
-
-        .credential-value {
-            font-family: monospace;
-            background-color: rgba(184, 134, 11, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
         /* Responsive */
         @media (max-width: 600px) {
             .login-container {
@@ -486,6 +453,13 @@
                     // For demo purposes, we'll simulate a successful login and redirect
                     // In a real application, you would use Firebase Authentication
                     setTimeout(() => {
+                        // Store admin session in localStorage
+                        localStorage.setItem('fxminds_admin_session', JSON.stringify({
+                            username: usernameInput.value,
+                            timestamp: new Date().getTime()
+                        }));
+                        
+                        // Redirect to admin dashboard
                         window.location.href = 'admin-dashboard.html';
                     }, 1500);
                 } else {
@@ -510,18 +484,28 @@
             showNotification('Password reset functionality would be implemented here', 'success');
         });
         
-        // Prevent direct access to admin.html without login
-        // Check if user is logged in as admin when page loads
+        // Check if admin session exists when page loads
         window.addEventListener('load', function() {
-            // Check if there's a direct access attempt
-            const urlParams = new URLSearchParams(window.location.search);
-            const directAccess = urlParams.get('direct');
-            
-            if (directAccess === 'true') {
-                // Clear any existing session
-                auth.signOut().then(() => {
-                    // Continue with normal login flow
-                });
+            const adminSession = localStorage.getItem('fxminds_admin_session');
+            if (adminSession) {
+                try {
+                    const sessionData = JSON.parse(adminSession);
+                    // Check if session is still valid (e.g., not expired)
+                    const currentTime = new Date().getTime();
+                    const sessionTime = sessionData.timestamp;
+                    const sessionExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+                    
+                    if (currentTime - sessionTime < sessionExpiry) {
+                        // Session is still valid, redirect to admin dashboard
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        // Session has expired, remove it
+                        localStorage.removeItem('fxminds_admin_session');
+                    }
+                } catch (e) {
+                    // Invalid session data, remove it
+                    localStorage.removeItem('fxminds_admin_session');
+                }
             }
         });
     </script>
