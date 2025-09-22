@@ -350,11 +350,6 @@
     <script src="js/firebase-config.js"></script>
 
     <script>
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
         const usernameInput = document.getElementById('username');
@@ -380,28 +375,6 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 5000);
-        }
-        
-        // Check if user is already logged in
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // User is already logged in, check if admin
-                checkAdminRole(user);
-            }
-        });
-        
-        // Check if user has admin role
-        function checkAdminRole(user) {
-            // Check if the email matches our admin email
-            if (user.email === 'admin@fxminds.com') {
-                // User is admin, redirect to admin dashboard
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                // User is not admin, sign out and show error
-                auth.signOut().then(() => {
-                    showNotification('You do not have admin privileges', 'error');
-                });
-            }
         }
         
         // Form submission
@@ -435,11 +408,13 @@
             loginBtn.disabled = true;
             loginBtn.innerHTML = 'Logging in... <span class="spinner"></span>';
             
-            // For demo purposes, we'll use hardcoded admin credentials
-            // In a real application, you would use Firebase Authentication
-            
+            // Check credentials
             setTimeout(() => {
-                if (usernameInput.value === 'admin@fxminds.com' && passwordInput.value === 'admin123') {
+                // Admin credentials (you can change these as needed)
+                const adminUsername = "admin@fxminds.com";
+                const adminPassword = "admin123";
+                
+                if (usernameInput.value === adminUsername && passwordInput.value === adminPassword) {
                     // Login successful
                     showNotification('Login successful! Redirecting to admin dashboard...', 'success');
                     
@@ -447,67 +422,4 @@
                     if (rememberMeCheckbox.checked) {
                         localStorage.setItem('fxminds_admin_remembered', 'true');
                     } else {
-                        localStorage.removeItem('fxminds_admin_remembered');
-                    }
-                    
-                    // For demo purposes, we'll simulate a successful login and redirect
-                    // In a real application, you would use Firebase Authentication
-                    setTimeout(() => {
-                        // Store admin session in localStorage
-                        localStorage.setItem('fxminds_admin_session', JSON.stringify({
-                            username: usernameInput.value,
-                            timestamp: new Date().getTime()
-                        }));
-                        
-                        // Redirect to admin dashboard
-                        window.location.href = 'admin-dashboard.html';
-                    }, 1500);
-                } else {
-                    // Login failed
-                    showNotification('Invalid username or password', 'error');
-                    
-                    // Re-enable button
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = 'Login';
-                }
-            }, 1000);
-        });
-        
-        // Remember me functionality
-        if (localStorage.getItem('fxminds_admin_remembered') === 'true') {
-            rememberMeCheckbox.checked = true;
-        }
-        
-        // Forgot Password
-        document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showNotification('Password reset functionality would be implemented here', 'success');
-        });
-        
-        // Check if admin session exists when page loads
-        window.addEventListener('load', function() {
-            const adminSession = localStorage.getItem('fxminds_admin_session');
-            if (adminSession) {
-                try {
-                    const sessionData = JSON.parse(adminSession);
-                    // Check if session is still valid (e.g., not expired)
-                    const currentTime = new Date().getTime();
-                    const sessionTime = sessionData.timestamp;
-                    const sessionExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-                    
-                    if (currentTime - sessionTime < sessionExpiry) {
-                        // Session is still valid, redirect to admin dashboard
-                        window.location.href = 'admin-dashboard.html';
-                    } else {
-                        // Session has expired, remove it
-                        localStorage.removeItem('fxminds_admin_session');
-                    }
-                } catch (e) {
-                    // Invalid session data, remove it
-                    localStorage.removeItem('fxminds_admin_session');
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+                        localStorage.removeItem('fxminds_admin_re
