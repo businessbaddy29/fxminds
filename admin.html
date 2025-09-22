@@ -343,12 +343,6 @@
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-
     <script>
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
@@ -422,4 +416,38 @@
                     if (rememberMeCheckbox.checked) {
                         localStorage.setItem('fxminds_admin_remembered', 'true');
                     } else {
-                        localStorage.removeItem('fxminds_admin_re
+                        localStorage.removeItem('fxminds_admin_remembered');
+                    }
+                    
+                    // Set login status
+                    localStorage.setItem('fxminds_admin_logged_in', 'true');
+                    
+                    // Redirect to admin dashboard after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1500);
+                } else {
+                    // Login failed
+                    showNotification('Invalid username or password. Please try again.', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Login';
+                }
+            }, 1000); // Simulate network delay
+        });
+        
+        // Check if user was remembered
+        window.addEventListener('DOMContentLoaded', () => {
+            const remembered = localStorage.getItem('fxminds_admin_remembered');
+            if (remembered === 'true') {
+                rememberMeCheckbox.checked = true;
+            }
+        });
+        
+        // Forgot password link
+        document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showNotification('Password reset link will be sent to your email.', 'success');
+        });
+    </script>
+</body>
+</html>
