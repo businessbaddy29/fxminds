@@ -522,6 +522,41 @@
             display: block;
         }
 
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-orange);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--light-khaki);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-grid {
@@ -691,48 +726,48 @@
                     Total Users
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">1,245</div>
-                <div class="box-status">+25 this week</div>
+                <div class="box-value" id="totalUsers">--</div>
+                <div class="box-status">Loading...</div>
             </div>
             <div class="dashboard-box">
                 <div class="box-title">
                     Active Users
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">986</div>
-                <div class="box-status">+18 this week</div>
+                <div class="box-value" id="activeUsers">--</div>
+                <div class="box-status">Loading...</div>
             </div>
             <div class="dashboard-box">
                 <div class="box-title">
                     Total Deposits
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">$124,560</div>
-                <div class="box-status">This month</div>
+                <div class="box-value" id="totalDeposits">--</div>
+                <div class="box-status">Loading...</div>
             </div>
             <div class="dashboard-box">
                 <div class="box-title">
                     Total Withdrawals
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">$98,740</div>
-                <div class="box-status">This month</div>
+                <div class="box-value" id="totalWithdrawals">--</div>
+                <div class="box-status">Loading...</div>
             </div>
             <div class="dashboard-box">
                 <div class="box-title">
                     Total Bonus
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">$45,230</div>
-                <div class="box-status">This month</div>
+                <div class="box-value" id="totalBonus">--</div>
+                <div class="box-status">Loading...</div>
             </div>
             <div class="dashboard-box">
                 <div class="box-title">
                     Pending Queries
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                 </div>
-                <div class="box-value">24</div>
-                <div class="box-status">Need attention</div>
+                <div class="box-value" id="pendingQueries">--</div>
+                <div class="box-status">Loading...</div>
             </div>
         </div>
 
@@ -752,126 +787,21 @@
             </div>
             
             <div class="tab-content active" id="all-users">
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Join Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>USR12345</td>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                            <td><span style="color: #2ECC71;">Active</span></td>
-                            <td>2023-05-15</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>USR12346</td>
-                            <td>Jane Smith</td>
-                            <td>jane@example.com</td>
-                            <td><span style="color: #2ECC71;">Active</span></td>
-                            <td>2023-06-20</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>USR12347</td>
-                            <td>Robert Johnson</td>
-                            <td>robert@example.com</td>
-                            <td><span style="color: #E74C3C;">Inactive</span></td>
-                            <td>2023-04-10</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
             </div>
             
             <div class="tab-content" id="active-users">
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Join Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>USR12345</td>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                            <td><span style="color: #2ECC71;">Active</span></td>
-                            <td>2023-05-15</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>USR12346</td>
-                            <td>Jane Smith</td>
-                            <td>jane@example.com</td>
-                            <td><span style="color: #2ECC71;">Active</span></td>
-                            <td>2023-06-20</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
             </div>
             
             <div class="tab-content" id="inactive-users">
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Join Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>USR12347</td>
-                            <td>Robert Johnson</td>
-                            <td>robert@example.com</td>
-                            <td><span style="color: #E74C3C;">Inactive</span></td>
-                            <td>2023-04-10</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
 
@@ -898,9 +828,6 @@
                     <label class="filter-label">User (Optional)</label>
                     <select class="filter-input" id="userSelect">
                         <option value="">All Users</option>
-                        <option value="USR12345">John Doe (USR12345)</option>
-                        <option value="USR12346">Jane Smith (USR12346)</option>
-                        <option value="USR12347">Robert Johnson (USR12347)</option>
                     </select>
                 </div>
                 
@@ -996,7 +923,7 @@
                 defaultDate: ["2023-01-01", "2023-12-31"]
             });
             
-            // Initialize chart
+            // Initialize chart with empty data
             const ctx = document.getElementById('incomeChart').getContext('2d');
             const incomeChart = new Chart(ctx, {
                 type: 'bar',
@@ -1005,21 +932,21 @@
                     datasets: [
                         {
                             label: 'Trading Bonus',
-                            data: [12000, 19000, 15000, 21000, 25000, 22000, 30000, 28000, 32000, 35000, 38000, 42000],
+                            data: [],
                             backgroundColor: 'rgba(184, 134, 11, 0.7)',
                             borderColor: 'rgba(184, 134, 11, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Level Bonus',
-                            data: [8000, 12000, 10000, 14000, 16000, 15000, 18000, 17000, 19000, 21000, 23000, 25000],
+                            data: [],
                             backgroundColor: 'rgba(189, 183, 107, 0.7)',
                             borderColor: 'rgba(189, 183, 107, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Referral Bonus',
-                            data: [5000, 7000, 6000, 8000, 9000, 8500, 10000, 9500, 11000, 12000, 12500, 13000],
+                            data: [],
                             backgroundColor: 'rgba(255, 212, 163, 0.7)',
                             borderColor: 'rgba(255, 212, 163, 1)',
                             borderWidth: 1
@@ -1040,7 +967,59 @@
                     }
                 }
             });
+            
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Load users
+            loadUsers('all-users');
         });
+
+        // Load dashboard data
+        function loadDashboardData() {
+            // This would normally fetch data from your database
+            // For now, we'll just show loading state
+            
+            // Simulate loading data
+            setTimeout(() => {
+                // Update dashboard boxes with actual data
+                document.getElementById('totalUsers').textContent = '0';
+                document.getElementById('activeUsers').textContent = '0';
+                document.getElementById('totalDeposits').textContent = '$0';
+                document.getElementById('totalWithdrawals').textContent = '$0';
+                document.getElementById('totalBonus').textContent = '$0';
+                document.getElementById('pendingQueries').textContent = '0';
+                
+                // Update status
+                document.querySelectorAll('.box-status').forEach(status => {
+                    status.textContent = 'No data available';
+                });
+            }, 1000);
+        }
+
+        // Load users
+        function loadUsers(tabId) {
+            const tabContent = document.getElementById(tabId);
+            
+            // This would normally fetch users from your database
+            // For now, we'll just show loading state
+            
+            // Simulate loading users
+            setTimeout(() => {
+                // Clear loading spinner
+                tabContent.innerHTML = '';
+                
+                // Create empty state
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <i class="fas fa-users"></i>
+                    <p>No users found</p>
+                `;
+                
+                tabContent.appendChild(emptyState);
+            }, 1000);
+        }
 
         // Menu Toggle
         const menuToggle = document.getElementById('menuToggle');
@@ -1081,6 +1060,9 @@
                 // Add active class to clicked tab and corresponding content
                 tab.classList.add('active');
                 document.getElementById(tabId).classList.add('active');
+                
+                // Load users for the selected tab
+                loadUsers(tabId);
             });
         });
 
@@ -1125,11 +1107,8 @@
             // Close modal
             userModal.classList.remove('active');
             
-            // In a real app, you would refresh the user list
-            // For demo, we'll just reload the page after a short delay
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+            // Reload users
+            loadUsers('all-users');
         });
 
         // Generate Report
