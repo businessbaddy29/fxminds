@@ -72,6 +72,9 @@
         .user-info {
             text-align: right;
             z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .user-id {
@@ -82,6 +85,24 @@
         .user-name {
             font-weight: bold;
             font-size: 18px;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         /* Menu Styles */
@@ -358,6 +379,88 @@
             width: 100%;
         }
 
+        /* Alert Section */
+        .alert-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .alert-form {
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--dark-gray);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--dark-khaki);
+            border-radius: 5px;
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.2);
+        }
+
+        .send-alert-btn {
+            background-color: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-alert-btn:hover {
+            background-color: var(--dark-khaki);
+        }
+
+        .alert-history {
+            margin-top: 20px;
+        }
+
+        .alert-item {
+            padding: 12px;
+            border-left: 4px solid var(--primary-orange);
+            background-color: var(--light-gray);
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .alert-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+
+        .alert-message {
+            font-size: 14px;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -574,6 +677,12 @@
             .generate-report-btn {
                 align-self: stretch;
             }
+            
+            .user-info {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 5px;
+            }
         }
     </style>
 </head>
@@ -588,8 +697,13 @@
             <span>FxMinds Admin</span>
         </div>
         <div class="user-info">
-            <div class="user-id">Admin ID: ADM001</div>
-            <div class="user-name">Administrator</div>
+            <div>
+                <div class="user-id">Admin ID: ADM001</div>
+                <div class="user-name">Administrator</div>
+            </div>
+            <button class="logout-btn" id="headerLogoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </div>
 
@@ -622,6 +736,17 @@
                 </div>
                 <div class="menu-item" data-page="add-user">
                     <i class="fas fa-user-plus"></i> Add User
+                </div>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-section-title">
+                <i class="fas fa-bullhorn"></i> Communication
+            </div>
+            <div class="menu-items">
+                <div class="menu-item" data-page="send-alert">
+                    <i class="fas fa-bell"></i> Send Alert to All Users
                 </div>
             </div>
         </div>
@@ -768,6 +893,34 @@
                 </div>
                 <div class="box-value" id="pendingQueries">--</div>
                 <div class="box-status">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Alert Section -->
+        <div class="alert-section">
+            <div class="section-title">
+                Send Alert to All Users
+            </div>
+            
+            <div class="alert-form">
+                <div class="form-group">
+                    <label class="form-label">Alert Message</label>
+                    <textarea class="form-textarea" id="alertMessage" placeholder="Type your alert message here that will be sent to all users..."></textarea>
+                </div>
+                
+                <button class="send-alert-btn" id="sendAlertBtn">
+                    <i class="fas fa-paper-plane"></i> Send Alert to All Users
+                </button>
+            </div>
+            
+            <div class="alert-history">
+                <h3 style="margin-bottom: 15px; color: var(--primary-orange);">Recent Alerts</h3>
+                <div id="alertsList">
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No alerts sent yet</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -973,6 +1126,9 @@
             
             // Load users
             loadUsers('all-users');
+            
+            // Load alerts history
+            loadAlertsHistory();
         });
 
         // Load dashboard data
@@ -1021,6 +1177,24 @@
             }, 1000);
         }
 
+        // Load alerts history
+        function loadAlertsHistory() {
+            const alertsList = document.getElementById('alertsList');
+            
+            // This would normally fetch alerts from your database
+            // For now, we'll just show empty state
+            
+            // Simulate loading alerts
+            setTimeout(() => {
+                alertsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No alerts sent yet</p>
+                    </div>
+                `;
+            }, 500);
+        }
+
         // Menu Toggle
         const menuToggle = document.getElementById('menuToggle');
         const menuContainer = document.getElementById('menuContainer');
@@ -1037,12 +1211,67 @@
             window.location.reload();
         });
 
-        // Logout
+        // Logout (from header)
+        const headerLogoutBtn = document.getElementById('headerLogoutBtn');
+        headerLogoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('fxminds_admin_logged_in');
+            localStorage.removeItem('fxminds_admin_remembered');
+            window.location.href = 'admin.html';
+        });
+
+        // Logout (from menu)
         const logoutBtn = document.getElementById('logoutBtn');
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('fxminds_admin_logged_in');
             localStorage.removeItem('fxminds_admin_remembered');
             window.location.href = 'admin.html';
+        });
+
+        // Send Alert
+        const sendAlertBtn = document.getElementById('sendAlertBtn');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertsList = document.getElementById('alertsList');
+
+        sendAlertBtn.addEventListener('click', () => {
+            const message = alertMessage.value.trim();
+            
+            if (message === '') {
+                showNotification('Please enter an alert message', 'error');
+                return;
+            }
+            
+            // Disable button and show loading
+            sendAlertBtn.disabled = true;
+            sendAlertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            // Simulate sending alert
+            setTimeout(() => {
+                // Create alert object
+                const alert = {
+                    id: Date.now(),
+                    message: message,
+                    timestamp: new Date().toLocaleString(),
+                    sentBy: 'Administrator'
+                };
+                
+                // Save alert to localStorage (in a real app, this would be saved to a database)
+                let alerts = JSON.parse(localStorage.getItem('fxminds_alerts') || '[]');
+                alerts.unshift(alert);
+                localStorage.setItem('fxminds_alerts', JSON.stringify(alerts));
+                
+                // Show success notification
+                showNotification('Alert sent to all users successfully!', 'success');
+                
+                // Clear textarea
+                alertMessage.value = '';
+                
+                // Re-enable button
+                sendAlertBtn.disabled = false;
+                sendAlertBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Alert to All Users';
+                
+                // Reload alerts history
+                loadAlertsHistory();
+            }, 1500);
         });
 
         // Tabs
