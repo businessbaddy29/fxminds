@@ -3,18 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>.</title>
+<title>Secure Slip</title>
 <style>
     body {
         font-family: monospace;
         padding: 20px;
+        background: #222;
+        color: white;
     }
     .slip {
-        width: 80ch; /* fixed char width for dot matrix */
+        width: 80ch;
         margin: 0 auto;
         padding: 10px;
         border: 1px solid #000;
         white-space: pre;
+        background: white;
+        color: black;
     }
     input {
         width: 25ch;
@@ -23,13 +27,13 @@
     }
     label {
         display: block;
-        color: white; /* text color visible on dark background */
+        color: white;
     }
     form {
         padding: 20px;
         border-radius: 10px;
-        background: linear-gradient(135deg, yellow, black); /* double colour background */
-        color: white; /* text contrast */
+        background: linear-gradient(135deg, yellow, black);
+        color: white;
     }
     button {
         margin-top: 10px;
@@ -41,49 +45,128 @@
         border: 2px solid black;
         border-radius: 5px;
         cursor: pointer;
-        transition: transform 0.2s, opacity 0.2s;
     }
-    button:hover {
-        transform: scale(1.05);
-        opacity: 0.9;
+    .loginBox {
+        background: #333;
+        padding: 30px;
+        border-radius: 10px;
+        width: 320px;
+        margin: 80px auto;
+        text-align: center;
     }
+    .loginBox input {
+        width: 90%;
+        margin: 10px 0;
+        padding: 5px;
+    }
+
+    /* Top bar with logout */
+    #topBar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    #logoutBtn {
+        padding: 5px 15px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    /* Print only slip */
     @media print {
         body * {
             visibility: hidden;
         }
-        .slip, .slip * {
+        #slipOutput, #slipOutput * {
             visibility: visible;
         }
-        .slip {
+        #slipOutput {
             position: absolute;
             left: 0;
             top: 0;
+            margin: 0;
+            padding: 5mm;
             border: none;
+            width: 100%;
+            background: white;
+            color: black;
         }
     }
 </style>
 </head>
 <body>
 
-<h2>Fill Slip Details</h2>
-<form id="slipForm">
+<div id="loginPage" class="loginBox">
+    <h2 style="margin-top:0;color:white">Login</h2>
+    <input type="text" id="username" placeholder="User ID"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="checkLogin()">Login</button>
+    <p id="errorMsg" style="color:red; display:none;">Invalid credentials</p>
+</div>
 
-    <label>Firm Name: <input type="text" id="firmName" value="FIRM NAME"></label>
-    <label>Firm Address: <input type="text" id="firmAddress" value="FIRM ADDRESS"></label>
-    <label>RST No: <input type="text" id="rstNo" value="101">   Vehicle No: <input type="text" id="vehicleNo" value="RJ32GE0903"></label>
-    <label>Vehicle Type: <input type="text" id="vehicleType">   Party Name: <input type="text" id="partyName"></label>
-    <label>Address: <input type="text" id="address">   Item: <input type="text" id="item" value="20MM"></label>
-    <label>Gross: <input type="text" id="gross" value="70680 Kg">   Date: <input type="text" id="grossDate" value="29/07/2025">   Time: <input type="text" id="grossTime" value="19:37"></label>
-    <label>Tare: <input type="text" id="tare" value="15700 Kg">   Date: <input type="text" id="tareDate" value="29/07/2025">   Time: <input type="text" id="tareTime" value="19:37"></label>
-    <label>Net: <input type="text" id="net" value="54980 Kg"></label>
-    <label>Charges: Rs <input type="text" id="charges" value="0"></label>
-    <label>Phone: <input type="text" id="phone" value="123456"></label>
-    <button type="button" onclick="generateSlip()">Print Slip</button>
-</form>
+<div id="mainPage" style="display:none;">
+    <div id="topBar">
+        <h2 id="heading">Fill Slip Details</h2>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
 
-<div id="slipOutput" class="slip" style="display:none;"></div>
+    <form id="slipForm">
+        <label>Firm Name: <input type="text" id="firmName" value="FIRM NAME"></label>
+        <label>Firm Address: <input type="text" id="firmAddress" value="FIRM ADDRESS"></label>
+        <label>RST No: <input type="text" id="rstNo" value="101">   Vehicle No: <input type="text" id="vehicleNo" value="RJ32GE0903"></label>
+        <label>Vehicle Type: <input type="text" id="vehicleType">   Party Name: <input type="text" id="partyName"></label>
+        <label>Address: <input type="text" id="address">   Item: <input type="text" id="item" value="20MM"></label>
+        <label>Gross: <input type="text" id="gross" value="70680 Kg">   Date: <input type="text" id="grossDate" value="29/07/2025">   Time: <input type="text" id="grossTime" value="19:37"></label>
+        <label>Tare: <input type="text" id="tare" value="15700 Kg">   Date: <input type="text" id="tareDate" value="29/07/2025">   Time: <input type="text" id="tareTime" value="19:37"></label>
+        <label>Net: <input type="text" id="net" value="54980 Kg"></label>
+        <label>Charges: Rs <input type="text" id="charges" value="0"></label>
+        <label>Phone: <input type="text" id="phone" value="123456"></label>
+        <button type="button" onclick="generateSlip()">Print Slip</button>
+    </form>
+
+    <div id="slipOutput" class="slip" style="display:none;">
+        <pre id="slipPre" style="margin:0; white-space:pre;"></pre>
+    </div>
+</div>
 
 <script>
+const USERNAME = "FxMiNds";  
+const PASSWORD = "Sk@#9136332836@";   
+
+function checkLogin() {
+    const u = document.getElementById("username").value;
+    const p = document.getElementById("password").value;
+    if (u === USERNAME && p === PASSWORD) {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("mainPage").style.display = "block";
+    } else {
+        const e = document.getElementById("errorMsg");
+        e.style.display = "block";
+        setTimeout(()=> e.style.display='none', 2000);
+    }
+}
+
+function logout() {
+    // Hide main page, show login
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("loginPage").style.display = "block";
+
+    // Clear login fields
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+
+    // Hide slip output
+    document.getElementById("slipOutput").style.display = "none";
+
+    // Reset form fields (optional)
+    document.getElementById("slipForm").reset();
+}
+
 function padCenter(text, width) {
     let left = Math.floor((width - text.length)/2);
     let right = width - text.length - left;
@@ -91,7 +174,7 @@ function padCenter(text, width) {
 }
 
 function generateSlip() {
-    const width = 80; // total char width for dot matrix
+    const width = 80;
     const firmName = document.getElementById("firmName").value;
     const firmAddress = document.getElementById("firmAddress").value;
     const rstNo = document.getElementById("rstNo").value;
@@ -128,8 +211,9 @@ function generateSlip() {
     slip += padCenter('Thanks for your visit', width) + '\n';
 
     const slipDiv = document.getElementById("slipOutput");
+    const slipPre = document.getElementById("slipPre");
+    slipPre.textContent = slip;
     slipDiv.style.display = 'block';
-    slipDiv.textContent = slip;
 
     window.print();
 }
